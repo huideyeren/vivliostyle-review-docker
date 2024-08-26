@@ -49,7 +49,8 @@ RUN apt update && \
                        xz-utils \
                        poppler-data \
                        graphviz \
-                       poppler-utils && \
+                       poppler-utils \
+                       locales && \
                        apt clean
 
 ENV PNPM_HOME="/pnpm"

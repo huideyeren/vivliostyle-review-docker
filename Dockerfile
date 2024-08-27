@@ -30,7 +30,7 @@ RUN apt-get update && \
       plantuml \
       ruby-dev build-essential \
       mecab-jumandic- mecab-jumandic-utf8- \
-      texlive-extra-utils poppler-utils && \
+      poppler-utils && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 

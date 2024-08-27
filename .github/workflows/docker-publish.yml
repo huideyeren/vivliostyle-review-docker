@@ -41,7 +41,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: ghcr.io/kei-s16/ghcr-container-push-demo
+          images: ghcr.io/huideyeren/vivliostyle-review-docker
           tags: |
             type=raw,value=latest
             type=sha,prefix=,suffix=,format=short

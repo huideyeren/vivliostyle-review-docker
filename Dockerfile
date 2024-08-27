@@ -51,8 +51,11 @@ RUN apt-get update && \
     apt-get install -y --no-install-recommends \
       nodejs && \
     apt-get clean && \
-    rm -rf /var/lib/apt/lists/* && \
-    npm install -g pnpm && pnpm setup
+    rm -rf /var/lib/apt/lists/*
+
+ENV PNPM_HOME="/pnpm"
+ENV PATH="$PNPM_HOME:$PATH"
+RUN corepack enable
 
 # install pandoc
 RUN apt-get update && apt-get -y install pandoc && \

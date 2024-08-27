@@ -28,7 +28,7 @@ RUN apt-get update && \
       zip ruby-zip \
       ruby-nokogiri mecab ruby-mecab mecab-ipadic-utf8 poppler-data \
       plantuml \
-      ruby-dev build-essential \
+      ruby-dev build-essential libmecab-dev \
       mecab-jumandic- mecab-jumandic-utf8- \
       poppler-utils libyaml-dev && \
     apt-get clean && \

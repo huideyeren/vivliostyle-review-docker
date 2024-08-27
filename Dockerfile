@@ -1,4 +1,4 @@
-FROM debian:slim
+FROM debian:bookworm-slim
 LABEL maintainer="takakura.yusuke@gmail.com"
 
 # https://docs.docker.com/engine/reference/builder/#automatic-platform-args-in-the-global-scope

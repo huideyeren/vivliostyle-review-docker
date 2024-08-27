@@ -1,93 +1,69 @@
-FROM node:slim as node
-FROM ruby:slim as ruby
-FROM python:slim as python
-FROM openjdk:24-slim as java
+FROM debian:slim
+LABEL maintainer="takakura.yusuke@gmail.com"
 
-RUN echo "en_US.UTF-8 UTF-8" >> /etc/locale.gen && \
-    locale-gen en_US.UTF-8 && update-locale en_US.UTF-8
+# https://docs.docker.com/engine/reference/builder/#automatic-platform-args-in-the-global-scope
+ARG TARGETARCH
+
+ENV REVIEW_VERSION 5.9.0
+ENV NODEJS_VERSION 20
+
 ENV LANG en_US.UTF-8
+ENV DEBIAN_FRONTEND noninteractive
 
-RUN apt update && \
-    apt install -y autoconf \ 
-                       bison \
-                       build-essential \
-                       libssl-dev \
-                       libyaml-dev \
-                       libreadline6-dev \
-                       zlib1g-dev \
-                       libncurses5-dev \
-                       libffi-dev \
-                       libgdbm6 \
-                       libgdbm-dev \
-                       libdb-dev \
-                       locales \
-                       git-core \
-                       zip \
-                       unzip \
-                       fontconfig \
-                       apt-utils \
-                       bash \
-                       curl \
-                       sudo \
-                       librsvg2-bin \
-                       libssl-dev \
-                       libreadline-dev \
-                       sudo \
-                       cron \
-                       libcairo2-dev \
-                       libffi-dev \
-                       zlib1g-dev && \
-                       libatk-bridge2.0-0 \
-                       libgtk-3-0 \
-                       libasound2 \
-                       pandoc \
-                       mecab \
-                       mecab-ipadic-utf8 \
-                       libmecab-dev \
-                       libgbm-dev \
-                       file \
-                       xz-utils \
-                       poppler-data \
-                       graphviz \
-                       poppler-utils \
-                       locales && \
-                       apt clean
+# setup
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+      locales git-core curl ca-certificates && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+RUN echo "en_US.UTF-8 UTF-8" >> /etc/locale.gen
+RUN locale-gen en_US.UTF-8 && update-locale en_US.UTF-8
 
-ENV PNPM_HOME="/pnpm"
-ENV PATH="$PNPM_HOME:$PATH"
-RUN corepack enable pnpm
+# for Debian Bug#955619
+RUN mkdir -p /usr/share/man/man1
 
-RUN mkdir -p /opt
-COPY --from=node /usr/local/bin/node /usr/local/bin
+# install Re:VIEW environment
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+      zip ruby-zip \
+      ruby-nokogiri mecab ruby-mecab mecab-ipadic-utf8 poppler-data \
+      plantuml \
+      ruby-dev build-essential \
+      mecab-jumandic- mecab-jumandic-utf8- \
+      texlive-extra-utils poppler-utils && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
 
-RUN pnpm install -g textlint-plugin-review \
-textlint-rule-preset-japanese \
-textlint-rule-general-novel-style-ja \
-@vivliostyle/cli
+# setup Re:VIEW
+RUN gem install bundler rake -N && \
+    gem install review -v "$REVIEW_VERSION" -N && \
+    gem install pandoc2review -N && \
+    gem install rubyzip -N
 
-RUN echo 'gem: --no-rdoc --no-ri' >> /.gemrc && \
-    gem update && \
-    gem install pandoc2review
+# install node.js environment
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+      gnupg && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+RUN curl -sL https://deb.nodesource.com/setup_${NODEJS_VERSION}.x | bash -
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+      nodejs && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/* && \
+    npm install -g pnpm
 
-RUN which pandoc2review
+# install pandoc
+RUN apt-get update && apt-get -y install pandoc && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
 
-RUN pip3 install anshitsu \
-                blockdiag \
-                blockdiag[pdf] \
-                reportlab \
-                svglib \
-                svgutils \
-                cairosvg \
-                PyPDF2
+# Playwright support with fonts. This consumes ~350MB
+RUN apt-get update && apt-get -y install --no-install-recommends fonts-noto-cjk-extra fonts-noto-color-emoji libatk1.0-0 libatk-bridge2.0-0 libdrm2 libxkbcommon0 libxcomposite1 libxdamage1 libxfixes3 libxrandr2 libgbm1 libpango-1.0-0 && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+RUN npm install -g playwright && rm -rf /root/.cache/ms-playwright/firefox* /root/.cache/ms-playwright/webkit* && gem install playwright-runner -N
 
-RUN mkdir /java && \
-    curl -sL https://sourceforge.net/projects/plantuml/files/plantuml.jar \
-          > /java/plantuml.jar
-
-RUN git clone https://github.com/neologd/mecab-ipadic-neologd.git && \
-    cd mecab-ipadic-neologd && \
-    sudo bin/install-mecab-ipadic-neologd -y && \
-    sudo echo dicdir = /usr/lib/x86_64-linux-gnu/mecab/dic/mecab-ipadic-neologd > /etc/mecabrc
-
-RUN mkdir /docs
-WORKDIR /docs
+# install Vivliostyle
+RUN pnpm install -g @vivliostyle/cli

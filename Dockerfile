@@ -52,7 +52,7 @@ RUN apt-get update && \
       nodejs && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/* && \
-    npm install -g pnpm
+    npm install -g pnpm && pnpm setup
 
 # install pandoc
 RUN apt-get update && apt-get -y install pandoc && \

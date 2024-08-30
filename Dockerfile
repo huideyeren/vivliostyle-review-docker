@@ -30,7 +30,7 @@ RUN apt-get update && \
       plantuml \
       ruby-dev build-essential libmecab-dev \
       mecab-jumandic- mecab-jumandic-utf8- \
-      poppler-utils libyaml-dev ghostscript && \
+      poppler-utils libyaml-dev ghostscript imagemagick && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 

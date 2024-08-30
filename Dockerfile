@@ -69,4 +69,4 @@ RUN apt-get update && apt-get -y install --no-install-recommends fonts-noto-cjk-
 RUN npm install -g playwright && rm -rf /root/.cache/ms-playwright/firefox* /root/.cache/ms-playwright/webkit* && gem install playwright-runner -N
 
 # install Vivliostyle
-RUN pnpm install -g @vivliostyle/cli
+RUN pnpm install -g @vivliostyle/cli @mermaid-js/mermaid-cli

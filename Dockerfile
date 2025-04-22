@@ -4,8 +4,8 @@ LABEL maintainer="takakura.yusuke@gmail.com"
 # https://docs.docker.com/engine/reference/builder/#automatic-platform-args-in-the-global-scope
 ARG TARGETARCH
 
-ENV REVIEW_VERSION 5.9.0
-ENV NODEJS_VERSION 20
+ENV REVIEW_VERSION 5.10.0
+ENV NODEJS_VERSION 22
 
 ENV LANG en_US.UTF-8
 ENV DEBIAN_FRONTEND noninteractive

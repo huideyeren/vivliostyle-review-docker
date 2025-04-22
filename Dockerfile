@@ -1,4 +1,4 @@
-FROM debian:trixie-slim
+FROM ubuntu:latest
 LABEL maintainer="takakura.yusuke@gmail.com"
 
 # https://docs.docker.com/engine/reference/builder/#automatic-platform-args-in-the-global-scope

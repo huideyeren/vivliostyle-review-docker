@@ -6,8 +6,6 @@ name: Push container image to ghcr.io
 # documentation.
 
 on:
-  schedule:
-    - cron: '44 12 * * *'
   push:
     branches: [ "main" ]
     # Publish semver tags as releases.

@@ -81,6 +81,9 @@ RUN apt update && \
     gsfonts \
     zip \
     sudo \
+    curl \
+    xz-utils \
+    file \
     mecab \
     mecab-ipadic-utf8 \
     libmecab-dev \

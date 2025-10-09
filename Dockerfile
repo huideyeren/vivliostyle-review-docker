@@ -80,6 +80,7 @@ RUN apt update && \
     ghostscript \
     gsfonts \
     zip \
+    sudo \
     mecab \
     mecab-ipadic-utf8 \
     libmecab-dev \
